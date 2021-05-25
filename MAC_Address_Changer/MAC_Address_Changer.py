@@ -1,4 +1,4 @@
-#!/usr/bin/env/python3
+#!/usr/bin/env python3
 
 import subprocess
 import argparse
@@ -36,6 +36,9 @@ def mac_changer(interface, new_mac):
     print(f'[+] Changing MAC Address to {new_mac}')
 
 def get_current_mac(interface):
+    '''
+    This Function will return the current MAC address
+    '''
     ifconfig_result = subprocess.check_output(['ifconfig', interface], text=True)
     current_mac = re.search(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w', ifconfig_result)
     
@@ -48,12 +51,13 @@ def get_current_mac(interface):
 
 value = user_input()
 current_mac = get_current_mac(value.interface)
-
-
 print(f'Current MAC is {current_mac} ')
-
-
 mac_changer(value.interface, value.new_mac)
+
+
+
+
+# Check if the MAC Address is changed
 
 current_mac = get_current_mac(value.interface)
 if current_mac == value.new_mac:
