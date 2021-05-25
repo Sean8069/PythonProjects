@@ -2,9 +2,10 @@
 
 import subprocess
 import argparse
+import re
 
 
-def User_Input():
+def user_input():
     '''
     This Function provides option for user input
     '''
@@ -22,7 +23,7 @@ def User_Input():
         return args
 
 
-def MAC_Changer(interface, new_mac):
+def mac_changer(interface, new_mac):
 
     '''
     This Function is to Change MAC Address of an Interface   
@@ -32,8 +33,32 @@ def MAC_Changer(interface, new_mac):
     subprocess.run(['ifconfig', interface, 'hw', 'ether', new_mac])
     subprocess.run(['ifconfig', interface, 'up'])
 
-    print(f'[+] MAC Address has successfully changed to {new_mac}')
+    print(f'[+] Changing MAC Address to {new_mac}')
+
+def get_current_mac(interface):
+    ifconfig_result = subprocess.check_output(['ifconfig', interface], text=True)
+    current_mac = re.search(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w', ifconfig_result)
+    
+    if current_mac:
+        return current_mac.group(0)  # return the first occurance of ifconfig result
+    else:
+        print('[-] Failed to read MAC Address.')
 
 
-value = User_Input()
-MAC_Changer(value.interface, value.new_mac)
+
+value = user_input()
+current_mac = get_current_mac(value.interface)
+
+
+print(f'Current MAC is {current_mac} ')
+
+
+mac_changer(value.interface, value.new_mac)
+
+current_mac = get_current_mac(value.interface)
+if current_mac == value.new_mac:
+    print(f'[+] MAC Address has successfully changed to {value.new_mac}')
+else:
+    print('[-] MAC Address Failed to change')
+
+
