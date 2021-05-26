@@ -1,7 +1,19 @@
 #!/usr/bin/env python3
 
 import scapy.all as scapy
+import argparse
 
+def user_input():
+    '''
+    This function provide options for user_input
+    '''
+    parser = argparse.ArgumentParser(description='This is a Network Scanner program')
+    parser.add_argument('-r', '--range', dest='ip_range', help='Specify the range of ip address in cidr, example: 10.0.0.0/24', metavar='')
+    args = parser.parse_args()
+    if not args.ip_range:
+        parser.error('[-] Error ip range, refer to --help for more information')
+    else:
+        return args.ip_range
 
 def scanner(ip):
     '''
@@ -45,5 +57,6 @@ def output(answered_list):
     print('----------------------------------------------------------------------\n')
 
 
-answered_list = scanner('10.0.2.1/24')
+ip_range = user_input()
+answered_list = scanner(ip_range)
 output(answered_list)
