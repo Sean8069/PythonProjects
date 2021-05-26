@@ -5,7 +5,7 @@ import scapy.all as scapy
 
 def scanner(ip):
     '''
-    This program broadcast and receive arp packets
+    This function broadcast and receive arp packets
     '''
 
     arp_request = scapy.ARP(pdst=ip) # Creating an ARP Packet
@@ -23,14 +23,27 @@ def scanner(ip):
     # print(arp_request_broadcast.summary())
     # arp_request_broadcast.show()
 
-    answered_list = scapy.srp(arp_request_broadcast, timeout=1)[0] # send arp_request_broadcast
+    return scapy.srp(arp_request_broadcast, timeout=1)[0] # send arp_request_broadcast
+    
+def output(answered_list):
+    '''
+    This function prints the output of recevied arp packets
+    '''
     print('______________________________________________________________________')
     print('\t\tIP Addresses\t\tMAC Addresses')
     print('----------------------------------------------------------------------')
 
-    for i in answered_list: # for loop to list the answered_list of ip and mac address
-        # print(i[1].show())
-        print(f'\t\t{i[1].psrc} \t\t{i[1].hwsrc}')
+    client_list = []
+    for element in answered_list:   # for loop to store all the ip and mac address in list dictionary to make it more organize
+        # print(element[1].show())  # information about the arp packets received
+        client_dict ={'ip' : element[1].psrc, 'mac' : element[1].hwsrc} 
+        client_list.append(client_dict)
+    
+    for dict_set in client_list:    # for loop to iterate and print out the dict value in the list
+        print(f'\t\t{dict_set["ip"]}\t\t{dict_set["mac"]}')
+        
+    print('----------------------------------------------------------------------\n')
 
 
-scanner('10.0.2.1/24')
+answered_list = scanner('10.0.2.1/24')
+output(answered_list)
